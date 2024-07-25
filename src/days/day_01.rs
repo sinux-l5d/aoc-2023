@@ -1,10 +1,31 @@
-use std::{io, iter};
+use clap::Parser;
+use std::{fs::File, io, iter, path::PathBuf};
 
-/// Function that process a file against day-01 challenge
-pub fn process(f: impl io::BufRead) -> usize {
-    f.lines()
-        .map(|line| nb_from_line(line.unwrap_or("".into()).as_str()))
-        .sum()
+use crate::{commands::Runnable, days::Day};
+
+#[derive(Parser)]
+pub struct Command {
+    #[clap(short, long, value_name = "FILE")]
+    file: PathBuf,
+}
+
+impl Runnable for Command {
+    fn run(&self) {
+        let file = File::open(&self.file).expect("Impossible d'ouvrir le fichier");
+        let result = Day01.process(io::BufReader::new(file));
+        println!("The result is \"{}\".", result);
+    }
+}
+
+struct Day01;
+
+impl Day<usize> for Day01 {
+    fn process(&self, input: impl io::BufRead) -> usize {
+        input
+            .lines()
+            .map(|line| nb_from_line(line.unwrap_or("".into()).as_str()))
+            .sum()
+    }
 }
 
 fn nb_from_line(l: &str) -> usize {
@@ -101,7 +122,7 @@ mod tests {
                     treb7uchet"
             .as_bytes();
         let reader = io::BufReader::new(file);
-        assert_eq!(process(reader), 142);
+        assert_eq!(Day01.process(reader), 142);
     }
 
     #[test]
@@ -115,7 +136,7 @@ mod tests {
                         7pqrstsixteen"
             .as_bytes();
         let reader = io::BufReader::new(file);
-        assert_eq!(process(reader), 281);
+        assert_eq!(Day01.process(reader), 281);
     }
 
     #[test]
