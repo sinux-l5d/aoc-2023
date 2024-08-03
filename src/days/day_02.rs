@@ -52,19 +52,10 @@ impl Day<usize> for Day02 {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Default)]
 struct Game {
     id: usize,
     rounds: Vec<Round>,
-}
-
-impl Default for Game {
-    fn default() -> Self {
-        Self {
-            id: 0,
-            rounds: Vec::default(),
-        }
-    }
 }
 
 impl Game {
@@ -73,21 +64,11 @@ impl Game {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Default)]
 struct Round {
     red: usize,
     green: usize,
     blue: usize,
-}
-
-impl Default for Round {
-    fn default() -> Self {
-        Self {
-            red: 0,
-            green: 0,
-            blue: 0,
-        }
-    }
 }
 
 impl Round {
@@ -147,7 +128,7 @@ mod tests {
     fn regex_game_parse() {
         let day = Day02::new();
         let hay = "Game 33: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green";
-        let Some(groups) = day.re_game.captures(&hay) else {
+        let Some(groups) = day.re_game.captures(hay) else {
             panic!("No game ID found");
         };
         assert_eq!("33", &groups["id"]);
@@ -161,7 +142,7 @@ mod tests {
     fn regex_draw_parse() {
         let day = Day02::new();
         let hay = "3 blue";
-        let Some(groups) = day.re_draw.captures(&hay) else {
+        let Some(groups) = day.re_draw.captures(hay) else {
             panic!("Can't parse count and color");
         };
         assert_eq!("3", &groups["count"]);
@@ -234,7 +215,7 @@ mod tests {
         ];
 
         for round in rounds_good {
-            assert_eq!(round.is_valid_part1(), true);
+            assert!(round.is_valid_part1());
         }
     }
 
@@ -259,7 +240,7 @@ mod tests {
         ];
 
         for round in rounds_bad {
-            assert_eq!(round.is_valid_part1(), false);
+            assert!(!round.is_valid_part1());
         }
     }
 }

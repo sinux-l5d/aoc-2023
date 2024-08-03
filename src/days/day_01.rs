@@ -42,32 +42,34 @@ fn nb_from_line(l: &str) -> usize {
 fn iter_numbers(l: &str) -> impl Iterator<Item = u8> + '_ {
     let mut current = "".to_owned();
 
-    l.bytes().filter_map(move |byte| match byte {
-        b'0'..=b'9' => {
-            current.clear();
-            Some(byte - b'0')
-        }
-        b'a'..=b'z' => {
-            current.push(byte as char);
-            match str_to_nb(&current) {
-                Some(SpelledNumber::Incomplete) => None,
-                Some(SpelledNumber::Is(n)) => {
-                    current.clear();
-                    Some(n)
-                }
-                None => {
-                    if let Some(start) = find_partial_number_end(&current) {
-                        current = start.to_owned();
-                    } else {
+    l.bytes().filter_map(move |byte| -> Option<u8> {
+        match byte {
+            b'0'..=b'9' => {
+                current.clear();
+                Some(byte - b'0')
+            }
+            b'a'..=b'z' => {
+                current.push(byte as char);
+                match str_to_nb(&current) {
+                    Some(SpelledNumber::Incomplete) => None,
+                    Some(SpelledNumber::Is(n)) => {
                         current.clear();
+                        Some(n)
                     }
-                    None
+                    None => {
+                        if let Some(start) = find_partial_number_end(&current) {
+                            current = start.to_string();
+                        } else {
+                            current.clear();
+                        }
+                        None
+                    }
                 }
             }
-        }
-        _ => {
-            current.clear();
-            None
+            _ => {
+                current.clear();
+                None
+            }
         }
     })
 }
