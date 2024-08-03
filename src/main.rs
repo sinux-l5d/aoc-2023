@@ -13,12 +13,14 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     Day01(days::day_01::Command),
+    Day02(days::day_02::Command),
 }
 
 impl Runnable for Commands {
     fn run(&self) {
         match self {
             Commands::Day01(cmd) => cmd.run(),
+            Commands::Day02(cmd) => cmd.run(),
         }
     }
 }

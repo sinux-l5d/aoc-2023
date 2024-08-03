@@ -5,7 +5,7 @@ use crate::{commands::Runnable, days::Day};
 
 #[derive(Parser)]
 pub struct Command {
-    #[clap(short, long, value_name = "FILE")]
+    #[clap(value_name = "FILE")]
     file: PathBuf,
 }
 
